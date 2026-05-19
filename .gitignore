@@ -1,9 +1,6 @@
 test/*
 bin/*
+*/__pycache__/*
+__pycache__/*
 PROJECTDESC
 
-
-
-# Added by cargo
-
-/target

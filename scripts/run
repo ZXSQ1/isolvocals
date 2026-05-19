@@ -1,4 +1,4 @@
 #!/bin/bash
 
 srcfile=mmusic/main.py
-python3 "$srcfile" $@
+uv run python3 "$srcfile" $@
