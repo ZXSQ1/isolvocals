@@ -1,10 +1,14 @@
 import numpy as np
+import math
+from utils import error
 from pydub import AudioSegment
-
 
 def normalize_audio(filename, chunk_duration_ms=1000, overlap_window_ms=500):
     """Yields an array of number, representing the audio file, that is suitable
     for processing with models."""
+
+    if chunk_duration_ms <= overlap_window_ms:
+        error("Overlap window can not equal or be greater than segment length")
 
     audio = AudioSegment.from_file(filename)
     audio.set_frame_rate(16000)
@@ -22,3 +26,12 @@ def normalize_audio(filename, chunk_duration_ms=1000, overlap_window_ms=500):
         yield samples
         start_ms += chunk_duration_ms - overlap_window_ms
 
+def get_normalized_audio_chunks(filename, chunk_duration_ms, overlap_window_ms):
+    """Gives the number of segments normalize_audio() will partition based
+    on the given chunk duration and overlap window"""
+
+    n_chunks = len(AudioSegment.from_file(filename)) / (
+        chunk_duration_ms - overlap_window_ms)
+    n_chunks = math.floor(n_chunks) - 1
+
+    return n_chunks
