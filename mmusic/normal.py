@@ -26,12 +26,19 @@ def normalize_audio(filename, chunk_duration_ms=1000, overlap_window_ms=500):
         yield samples
         start_ms += chunk_duration_ms - overlap_window_ms
 
+    if start_ms < audio_duration_ms:
+        chunk = audio[start_ms:]
+        samples = np.array(chunk.get_array_of_samples())
+        samples = samples.astype(np.float32) / normalization_factor
+
+        yield samples
+
 def get_normalized_audio_chunks(filename, chunk_duration_ms, overlap_window_ms):
     """Gives the number of segments normalize_audio() will partition based
     on the given chunk duration and overlap window"""
 
     n_chunks = len(AudioSegment.from_file(filename)) / (
         chunk_duration_ms - overlap_window_ms)
-    n_chunks = math.floor(n_chunks) - 1
+    n_chunks = math.ceil(n_chunks) - 1
 
     return n_chunks

@@ -8,7 +8,7 @@ from models import get_model_optimal_audio_length_ms
 
 @click.command()
 @click.option("--model", "-m", type=click.Choice([
-    "ast", "norwood"]), default="ast",
+    "ast", "silerovad"]), default="ast",
     help="The model used for music detection.")
 @click.option("--simulate", "-s", is_flag=True, default=False,
     help="Print the timestamp ranges where music is detected.")
