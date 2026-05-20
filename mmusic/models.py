@@ -9,7 +9,7 @@ def get_model(acronym) -> str:
 def get_model_music_labels(acronym) -> list[str]:
     """Gets the labels for music detection of a given model"""
     if acronym == "ast":
-        return [""]
+        return ["Music"]
     elif acronym == "silerovad":
         return ["noise"]
 
