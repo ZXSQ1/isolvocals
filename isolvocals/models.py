@@ -1,5 +1,5 @@
 from df.enhance import init_df, load_audio, enhance, save_audio
-from audio import iter_audio_segments 
+from media import iter_media_segments 
 from tqdm import tqdm
 from pydub import AudioSegment
 from pydub.utils import mediainfo
@@ -28,7 +28,7 @@ class DeepFilterNetIsolator():
         else:
             file = outfile
 
-        segment_filenames, segment_number = iter_audio_segments(
+        segment_filenames, segment_number = iter_media_segments(
             media_filename, self.chunk_length_ms,
         )
 

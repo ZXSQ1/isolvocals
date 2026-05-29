@@ -6,7 +6,6 @@ warnings.simplefilter("ignore", UserWarning)
 
 from models import DeepFilterNetIsolator
 from sys import stdout
-from audio import iter_audio_segments, combine_audio
 import click
 
 
