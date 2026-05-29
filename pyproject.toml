@@ -1,5 +1,5 @@
 [project]
-name = "rmmusic"
+name = "isolvocals"
 version = "0.1.0"
 description = "A terminal tool for playing media music-free"
 readme = "README.md"
@@ -16,4 +16,4 @@ dependencies = [
 ]
 
 [project.scripts]
-rmmusic = "rmmusic.main:main"
+isolvocal = "isolvocals.main:main"
