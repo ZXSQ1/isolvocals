@@ -1,4 +1,0 @@
-#!/bin/bash
-
-srcfile=isolvocals/main.py
-uv run python3 "$srcfile" $@

@@ -1,6 +1,6 @@
-test/*
-bin/*
 */__pycache__/*
 __pycache__/*
 PROJECTDESC
-
+build/*
+test/*
+*.egg-info

@@ -1,9 +1,9 @@
 from sys import stderr
 
-colored = True
 verbose = True
 progress = True
-debug = True
+progress_char = "-"
+progress_header = "Processing audio chunks"
 logfile = stderr
 
 dependencies = ["ffmpeg"]

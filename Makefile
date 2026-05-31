@@ -1,5 +1,6 @@
 
-PROGRAM_FILE = mmusic/main.py
+install-dev:
+	uv tool install . --editable
 
-run:
-	python3 $(PROGRAM_FILE)
+install:
+	uv tool install .
