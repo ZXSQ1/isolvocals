@@ -72,8 +72,8 @@ def from_pcm(filename, sr=48000, chan=2, pcm_format="s16le", forma_t="wav"):
 
 def cut_media(filename, start_ms, segment_length_ms, out_filename):
     """Cuts a segment from the audio with a specified start and length.""" 
-    info = media_info(filename)
-    duration_ms = int(float(info["format"]["duration"]) * 1000)
+    file_info = media_info(filename)
+    duration_ms = int(float(file_info["format"]["duration"]) * 1000)
     
     if start_ms + segment_length_ms > duration_ms:
         error(f"Unable to cut audio file '{filename}': exceeds audio duration")
@@ -94,12 +94,12 @@ def split_media(filename, segment_length_ms, output_prefix):
     """Splits the given media file by segment length and yields each split
     output filename."""
 
-    info = media_info(filename)
+    file_info = media_info(filename)
     filename_ext = filename.split(".")[-1]
-    exts = info["format"]["format_name"].split(",")
+    exts = file_info["format"]["format_name"].split(",")
     ext = filename_ext if filename_ext in exts else exts.split(",")[0]
     ext = "" if ext == "" else f".{ext}"
-    duration_ms = int(float(info["format"]["duration"]) * 1000)
+    duration_ms = int(float(file_info["format"]["duration"]) * 1000)
 
     start_ms = 0
     segments = range(0, duration_ms, segment_length_ms)
@@ -204,10 +204,10 @@ def extract_media(filename, out_filename, isolate="video"):
 def media_type(filename):
     """Returns 'video' if the media file is a video, 'audio' if it is an audio,
     'unknown' if it is not recognizable."""
-    info = media_info(filename)
+    file_info = media_info(filename)
     codecs = []
 
-    for stream in info["streams"]:
+    for stream in file_info["streams"]:
         codecs.append(stream["codec_type"])
 
     info(f"Querying media type for '{filename}'.")

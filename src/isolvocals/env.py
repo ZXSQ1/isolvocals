@@ -1,9 +1,9 @@
 from sys import stderr
+from rich import console
 
 verbose = True
 progress = True
-progress_char = "-"
 progress_header = "Processing audio chunks"
-logfile = stderr
+console = console.Console(file=stderr)
 
 dependencies = ["ffmpeg", "ffprobe"]

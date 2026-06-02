@@ -1,7 +1,6 @@
 from df.enhance import init_df, load_audio, enhance, save_audio
 from isolvocals.media import iter_media_segments, extract_pcm, media_info
-from tqdm import tqdm
-from isolvocals.utils import error
+from isolvocals.utils import error, info, progress
 from io import BytesIO
 from isolvocals import env
 import click
@@ -23,23 +22,20 @@ class DeepFilterNetIsolator():
         file path  or stream, writes WAVE 48kHz signed int 16-bit little-endian
         stereo to given binary output file."""
 
-        prev_logfile = env.logfile
         file = open(outfile, "wb") if isinstance(outfile, str) else outfile
         segment_filenames, segment_number = iter_media_segments(
             filename, self.chunk_length_ms,
         )
 
         if env.progress:
-            segment_filenames = tqdm(
-                segment_filenames, desc=env.progress_header, file=env.logfile,
-                total=segment_number, ascii=f" {env.progress_char}",
+            segment_filenames = progress(
+                segment_filenames, total=segment_number,
+                desc=env.progress_header,
             )
 
-            env.logfile = segment_filenames
-
-        info = media_info(filename)
+        file_info = media_info(filename)
         frame_rate = 48000
-        nframes = int(float(info["format"]["duration"]) * frame_rate)
+        nframes = int(float(file_info["format"]["duration"]) * frame_rate)
 
         try:
             with wave.open(file, "w") as f:
@@ -54,7 +50,7 @@ class DeepFilterNetIsolator():
                         segment_filename
             
                     info(f"Loading audio tensor for '{segment_filename}'.")
-                    audio_tensor, info = load_audio(segment_filename)
+                    audio_tensor, file_info = load_audio(segment_filename)
 
                     info("Running model on segment.")
                     enhanced_audio = enhance(self.model, self.state, audio_tensor)
@@ -67,8 +63,5 @@ class DeepFilterNetIsolator():
         except wave.Error as e:
              error(e)
  
-        if env.progress and env.logfile != prev_logfile:
-            env.logfile = prev_logfile
-
         if isinstance(outfile, str):
             file.close()

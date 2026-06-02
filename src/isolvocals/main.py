@@ -1,7 +1,7 @@
 import logging
 import warnings
 from isolvocals import env
-logging.basicConfig(stream=env.logfile, level=logging.INFO)
+logging.basicConfig(stream=env.console.file, level=logging.INFO)
 warnings.simplefilter("ignore", UserWarning)
 
 from isolvocals.models import DeepFilterNetIsolator
@@ -16,12 +16,15 @@ import click
 
 def check_dependencies():
     """Checks for the existance external dependencies."""
-    for path in environ.get("PATH").split(":"):
-        for dependency in env.dependencies:
-            if exists(f"{path}/{binary}"):
-                break
+    for dependency in env.dependencies:
+        dependency_found = False
+
+        for path in environ.get("PATH").split(":"):
+            if exists(f"{path}/{dependency}"):
+                dependency_found = True
         
-        error(f"Dependency '{dependency}' not found.")
+        if not dependency_found:
+            error(f"Dependency '{dependency}' not found.")
 
 
 @click.command()
@@ -68,13 +71,6 @@ def check_dependencies():
 )
 
 @click.option(
-    "--progress-char",
-    default=env.progress_char,
-    type=str,
-    help="Determine the progress bar fill character."
-)
-
-@click.option(
     "--progress-header",
     default=env.progress_header,
     type=str,
@@ -88,7 +84,7 @@ def check_dependencies():
 )
 
 def main(model, out_filename, to_stdout, chunk_length, quiet, progress,
-    progress_char, progress_header, filename):
+    progress_header, filename):
 
     """A terminal tool for playing media music-free."""
     check_dependencies()
@@ -100,13 +96,10 @@ def main(model, out_filename, to_stdout, chunk_length, quiet, progress,
         error("Must specify either --out-filename or --to-stdout.")
 
     if progress and not to_stdout:
-        env.progress = True 
+        env.progress = True
 
-    if len(progress_char) > 0:
-        if len(progress_char) > 1:
-            error("Progress character must be only one character.")
-
-        env.progress_char = progress_char
+    if progress_header != "":
+        env.progress_header = progress_header
 
     if not exists(filename):
         error(f"File '{filename}' does not exist.")
@@ -121,7 +114,7 @@ def main(model, out_filename, to_stdout, chunk_length, quiet, progress,
         if exists(out_filename) and not isfile(out_filename):
             error(f"File '{out_filename}' is not a regular file.")
 
-        if not exists(dirname(out_filename)):
+        if dirname(out_filename) != "" and not exists(dirname(out_filename)):
             error(f"File parent directory '{out_filename} does not exist.'")
 
     if media_type(filename) != "audio":
