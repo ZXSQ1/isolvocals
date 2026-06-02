@@ -54,4 +54,4 @@ uv pip install git+https://github.com/ZXSQ1/isolvocals
 - [ ] **Video:** allow videos to be processed and streamed (not just audio).
 - [ ] **Load-time:** reduce load-time by optimizing imports.
 - [ ] **Models:** support more models.
-- [ ] **Temp files:** reduce temporary file creation in the code.
+- [ ] **Temporary files:** reduce temporary file creation in code.
