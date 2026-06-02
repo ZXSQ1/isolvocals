@@ -55,3 +55,7 @@ uv pip install git+https://github.com/ZXSQ1/isolvocals
 - [ ] **Load-time:** reduce load-time by optimizing imports.
 - [ ] **Models:** support more models.
 - [ ] **Temporary files:** reduce temporary file creation in code.
+
+## License
+
+Uses [GNU GPL License](./LICENSE).
