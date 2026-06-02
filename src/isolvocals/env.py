@@ -6,4 +6,4 @@ progress_char = "-"
 progress_header = "Processing audio chunks"
 logfile = stderr
 
-dependencies = ["ffmpeg"]
+dependencies = ["ffmpeg", "ffprobe"]

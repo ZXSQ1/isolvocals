@@ -9,5 +9,5 @@ def error(msg):
 
 
 def info(msg):
-    click.echo(msg, file=env.logfile)
-
+    if env.verbose:
+        click.echo(msg, file=env.logfile)

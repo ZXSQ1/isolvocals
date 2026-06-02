@@ -23,7 +23,8 @@ class DeepFilterNetIsolator():
         file path  or stream, writes WAVE 48kHz signed int 16-bit little-endian
         stereo to given binary output file."""
 
-        file = open(outfile, "wb") if isinstance(outfile, str) else outfile 
+        prev_logfile = env.logfile
+        file = open(outfile, "wb") if isinstance(outfile, str) else outfile
         segment_filenames, segment_number = iter_media_segments(
             filename, self.chunk_length_ms,
         )
@@ -33,6 +34,8 @@ class DeepFilterNetIsolator():
                 segment_filenames, desc=env.progress_header, file=env.logfile,
                 total=segment_number, ascii=f" {env.progress_char}",
             )
+
+            env.logfile = segment_filenames
 
         info = media_info(filename)
         frame_rate = 48000
@@ -50,15 +53,22 @@ class DeepFilterNetIsolator():
                         segment_filename.split(".")[-1] != "wav" else \
                         segment_filename
             
+                    info(f"Loading audio tensor for '{segment_filename}'.")
                     audio_tensor, info = load_audio(segment_filename)
+
+                    info("Running model on segment.")
                     enhanced_audio = enhance(self.model, self.state, audio_tensor)
+
+                    info(f"Saving to segment file '{tmp_out_filename}'.")
                     save_audio(tmp_out_filename, enhanced_audio, frame_rate)
 
                     f.writeframesraw(extract_pcm(tmp_out_filename))
         
         except wave.Error as e:
              error(e)
+ 
+        if env.progress and env.logfile != prev_logfile:
+            env.logfile = prev_logfile
 
-      
         if isinstance(outfile, str):
             file.close()

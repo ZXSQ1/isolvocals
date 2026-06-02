@@ -7,10 +7,21 @@ warnings.simplefilter("ignore", UserWarning)
 from isolvocals.models import DeepFilterNetIsolator
 from sys import stdout
 from os.path import exists, isfile, dirname
+from os import environ
 from isolvocals.media import media_type, media_convert
 from isolvocals.utils import error, info
 from tempfile import NamedTemporaryFile
 import click
+
+
+def check_dependencies():
+    """Checks for the existance external dependencies."""
+    for path in environ.get("PATH").split(":"):
+        for dependency in env.dependencies:
+            if exists(f"{path}/{binary}"):
+                break
+        
+        error(f"Dependency '{dependency}' not found.")
 
 
 @click.command()
@@ -80,6 +91,8 @@ def main(model, out_filename, to_stdout, chunk_length, quiet, progress,
     progress_char, progress_header, filename):
 
     """A terminal tool for playing media music-free."""
+    check_dependencies()
+
     if quiet:
         env.verbose = False 
 

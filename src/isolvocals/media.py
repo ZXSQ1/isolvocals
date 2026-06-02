@@ -1,4 +1,4 @@
-from isolvocals.utils import error
+from isolvocals.utils import error, info
 from os import listdir, path
 from tempfile import TemporaryDirectory, NamedTemporaryFile
 from json import loads
@@ -29,7 +29,9 @@ def media_info(filename):
         "-show_streams", filename,
     ]
 
+    info(f"Querying info for '{filename}'.")
     proc = run_proc(cmd, "Media info failed")
+
     return loads(proc.stdout.decode())
 
 
@@ -40,6 +42,8 @@ def extract_pcm(filename, sr=48000, chan=2, forma_t="s16le", codec="pcm_s16le"):
         "-f", forma_t, "-acodec", codec, "pipe:1",
     ]
 
+    info(f"Extracting PCM from '{filename}'.")
+
     return run_proc(cmd, "Extracting PCM failed").stdout
 
 
@@ -47,6 +51,8 @@ def media_convert(filename, out_filename):
     cmd = [
         "ffmpeg", "-y", "-i", filename, out_filename,
     ]
+
+    info(f"Converting '{filename}' to '{out_filename}'.")
 
     return run_proc(cmd, "Conversion failed")
 
@@ -58,6 +64,8 @@ def from_pcm(filename, sr=48000, chan=2, pcm_format="s16le", forma_t="wav"):
         "ffmpeg", "-y", "-f", forma_t, "-ar", str(sr), "-ac", chan,
         "-i", filename, "pipe:1", "-f", forma_t,
     ]
+
+    info(f"Converting PCM from '{filename}' to '{forma_t}'.")
 
     return run_proc(cmd, err_msg).stdout
 
@@ -76,6 +84,9 @@ def cut_media(filename, start_ms, segment_length_ms, out_filename):
         "-map_metadata", "0", out_filename,
     ]
 
+    info(f"Cutting '{filename}' from {start_ms} for duration "
+        f"{segment_length_ms}.")
+    
     run_proc(cmd, "Cutting media file failed")
 
 
@@ -142,6 +153,8 @@ def combine_media(out_filename, *audio_filenames, video=False):
             out_filename,
         ]
 
+    
+    info(f"Combining files into one file '{out_filename}'.")
     run_proc(cmd, "Combining media files failed") 
 
 
@@ -160,6 +173,7 @@ def add_audio_to_video(out_filename, audio_filename, video_filename):
         "-map_metadata", "0", "-shortest", out_filename,
     ]
 
+    info(f"Adding audio track '{audio_filename}' to video '{video_filename}'.")
     run_proc(cmd, "Adding audio to video failed")
 
 
@@ -182,6 +196,8 @@ def extract_media(filename, out_filename, isolate="video"):
             "-map", "0:t?", "-c", "copy", out_filename,
         ]
 
+    info(f"Extracting {isolate} from '{filename}' into '{out_filename}'.")
+
     run_proc(cmd, "Extracting audio/video failed")
 
 
@@ -193,6 +209,8 @@ def media_type(filename):
 
     for stream in info["streams"]:
         codecs.append(stream["codec_type"])
+
+    info(f"Querying media type for '{filename}'.")
 
     if "video" in codecs and "audio" in codecs:
         return "video"
